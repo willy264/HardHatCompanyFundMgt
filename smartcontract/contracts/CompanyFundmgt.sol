@@ -25,7 +25,7 @@ contract CompanyFunds is Ownable {
     event Signed(address member);
     event FundsReleased(uint256 amount);
 
-    constructor(address[] memory _boardMembers) {
+    constructor(address[] memory _boardMembers) Ownable(msg.sender) {
         if (_boardMembers.length != requiredSignatures) revert MustHaveExactly20Members();
         boardMembers = _boardMembers;
     }
