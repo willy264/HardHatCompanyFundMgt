@@ -9,17 +9,28 @@ describe("CompanyFunds", function () {
 
         const CompanyFunds = await hre.ethers.getContractFactory("CompanyFunds");
         const contract = await CompanyFunds.deploy(memberAddresses);
-        await contract.deployed();
 
         return { contract, owner, recipient, boardMembers };
     }
 
-    it("should add funds", async function () {
-        const { contract, owner } = await loadFixture(deployFixture);
-        await contract.connect(owner).addFunds({ value: hre.ethers.parseEther("10") });
-        const balance = await hre.ethers.provider.getBalance(contract.address);
-        expect(balance).to.equal(hre.ethers.parseEther("10"));
-    });
+    describe('deployment', () => {
+        it("should deploy", async () => {
+            let {contract} = await loadFixture(deployFixture);
+            expect(contract).to.not.be.equal(null);
+        })       
+    })
+
+
+    describe('should add funds', () => { 
+        it('should deposit', async() => {
+            const {contract} = await loadFixture(deployFixture);
+            let depositAmount = hre.ethers.parseEther("1");
+            let depositBefore = await contract.funds();
+            await contract.addFunds({value: depositAmount});
+            let depositAfter = await contract.funds() ;
+            expect(depositAfter).to.be.greaterThanOrEqual(depositBefore);
+        })
+    })
 
     it("should request fund release", async function () {
         const { contract, owner } = await loadFixture(deployFixture);

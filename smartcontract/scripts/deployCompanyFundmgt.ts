@@ -1,10 +1,10 @@
-const { ethers } = require("hardhat");
+import { ethers } from "hardhat";
 
-async function main() {
+async function main(): Promise<void> {
     const [deployer, recipient, ...boardMembers] = await ethers.getSigners();
 
     // Deploy the contract with exactly 20 board members
-    const memberAddresses = boardMembers.slice(0, 20).map(member => member.address);
+    const memberAddresses: string[] = boardMembers.slice(0, 20).map(member => member.address);
     const CompanyFunds = await ethers.getContractFactory("CompanyFunds");
     const companyFunds = await CompanyFunds.deploy(memberAddresses);
 
@@ -12,7 +12,7 @@ async function main() {
     console.log("CompanyFunds deployed to:", companyFunds.address);
 
     // Add funds to the contract
-    const addFundsTx = await companyFunds.connect(deployer).addFunds({ value: ethers.utils.parseEther("10") });
+    const addFundsTx = await companyFunds.connect(deployer).addFunds({ value: ethers.parseEther("10") });
     await addFundsTx.wait();
     console.log("Funds added: 10 ETH");
 
